@@ -3,8 +3,13 @@
  * http://paletton.com/#uid=33q0u0knuUjc0YoiiWns-RfDSL+
  */
 
+* {
+  overflow: hidden;
+}
+
 html {
   height: 100%;
+  overflow: auto;
 }
 
 body {
