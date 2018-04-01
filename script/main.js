@@ -16,6 +16,117 @@ function Day (date, icon, minTemperature, maxTemperature) {
  */
 
 function Controller() {
+  const API_KEY = 'vhBfT2oWhuYUoMQJVHyA3q57xTsX7C48';
+  var lastLatitude = NaN;
+  var lastLongitude = NaN;
+  var locationKey = NaN;
+  var locationName = null;
+
+  this.view = null;
+  this.forecasts = null;
+
+  function requestLocationData(latitude, longitude, callback) {
+    var url = 'http://dataservice.accuweather.com/locations/v1/cities/' +
+              'geoposition/search?apikey=' + API_KEY + '&q=' + latitude +
+              ',' + longitude + '&language=es-es&details=true';
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+      if (this.readyState === 4 && this.status === 200) {
+        var result = JSON.parse(this.responseText);
+        callback(result);
+      }
+    };
+    request.open('GET', url, true);
+    request.send();
+  }
+
+  function requestForecastData(callback) {
+    var url = 'http://dataservice.accuweather.com/forecasts/v1/daily/5day/' +
+              locationKey + '?apikey=' + API_KEY + '&language=es-es';
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+      if (this.readyState === 4 && this.status === 200) {
+        var result = JSON.parse(this.responseText);
+        callback(result);
+      }
+    };
+    request.open('GET', url, true);
+    request.send();
+  }
+
+  function iconIndexToName(index) {
+    if (index <= 5) return 'sunny';
+    else if (index <= 8) return 'cloudy';
+    else if (index == 11) return 'foggy';
+    else if (index <= 13) return 'rainy';
+    else if (index == 14) return 'rainy-sunny';
+    else if (index <= 17) return 'stormy';
+    else if (index == 18) return 'rainy';
+    else if (index <= 29) return 'snowy';
+    else if (index <= 31) return 'error';
+    else if (index == 32) return 'windy';
+    else if (index <= 37) return 'sunny';
+    else if (index == 38) return 'cloudy';
+    else if (index <= 40) return 'rainy';
+    else if (index <= 42) return 'stormy';
+    else if (index <= 44) return 'snowy';
+    else return error;
+  }
+
+  function setForecastData(forecastData) {
+    console.log(forecastData);
+    this.forecasts = [];
+    for (var dailyForecast of forecastData.DailyForecasts) {
+      var date = new Date(dailyForecast.Date);
+      var icon = iconIndexToName(dailyForecast.Day.Icon);
+      var minTemperature = dailyForecast.Temperature.Minimum.Value;
+      if (dailyForecast.Temperature.Minimum.UnitType == 18) {
+        minTemperature = (minTemperature - 32) * 5 / 9;
+      } else if (dailyForecast.Temperature.Minimum.UnitType == 19) {
+        minTemperature = minTemperature - 273.15;
+      }
+      minTemperature = Math.round(minTemperature);
+      var maxTemperature = dailyForecast.Temperature.Maximum.Value;
+      if (dailyForecast.Temperature.Maximum.UnitType == 18) {
+        maxTemperature = (maxTemperature - 32) * 5 / 9;
+      } else if (dailyForecast.Temperature.Maximum.UnitType == 19) {
+        maxTemperature = maxTemperature - 273.15;
+      }
+      maxTemperature = Math.round(maxTemperature);
+      var forecast = new Day(date, icon, minTemperature, maxTemperature);
+      this.forecasts.push(forecast);
+    }
+    for (var i in this.forecasts) {
+      this.view.dayViews[i].setIcon(this.forecasts[i].icon);
+      this.view.dayViews[i].setTemperature(
+        this.forecasts[i].temperature.minimum,
+        this.forecasts[i].temperature.maximum);
+      this.view.dayViews[i].setDate(this.forecasts[i].date);
+    }
+  }
+
+  function setLocationData(locationData) {
+    locationName = locationData.LocalizedName;
+    this.view.setLocation(locationData.LocalizedName);
+    locationKey = locationData.Details.Key;
+    lastLatitude = locationData.GeoPosition.Latitude;
+    lastLongitude = locationData.GeoPosition.Longitude;
+    requestForecastData(setForecastData.bind(this));
+  }
+
+  this.update = function () {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        if (lastLatitude != position.coords.latitude ||
+          lastLongitude != position.coords.longitude) {
+          requestLocationData(position.coords.latitude,
+            position.coords.longitude, setLocationData.bind(this));
+        } else {
+          requestForecastData(setForecastData.bind(this));
+        }
+      });
+    }
+  }
 
 }
 
@@ -43,7 +154,7 @@ function DayView(root) {
       case 'rainy':
         icon = '🌧';
         break;
-      case 'sunny-rainy':
+      case 'rainy-sunny':
         icon = '🌦';
         break;
       case 'stormy':
@@ -79,6 +190,9 @@ function DayView(root) {
 
 function View(controller) {
   this.dayViews = null;
+  var locationField = null;
+
+  controller.view = this;
 
   window.onload = () => {
     this.dayViews = [];
@@ -87,11 +201,15 @@ function View(controller) {
     for (var day of days) {
       this.dayViews.push(new DayView(day));
     }
-    for (var v of this.dayViews) {
-      v.setIcon('sunny');
-      v.setDate(new Date('12/27/2017'));
-      v.setTemperature(-1, 10);
-    }
+    locationField = document.querySelector('#location p');
+  }
+
+  this.setLocation = function (location) {
+    locationField.innerHTML = location;
+  }
+
+  this.update = function () {
+    controller.update();
   }
 }
 
