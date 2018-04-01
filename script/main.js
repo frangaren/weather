@@ -21,6 +21,7 @@ function Controller() {
   var lastLongitude = NaN;
   var locationKey = NaN;
   var locationName = null;
+  var lastCheckDate = null;
 
   this.view = null;
   this.forecasts = null;
@@ -96,18 +97,12 @@ function Controller() {
       var forecast = new Day(date, icon, minTemperature, maxTemperature);
       this.forecasts.push(forecast);
     }
-    for (var i in this.forecasts) {
-      this.view.dayViews[i].setIcon(this.forecasts[i].icon);
-      this.view.dayViews[i].setTemperature(
-        this.forecasts[i].temperature.minimum,
-        this.forecasts[i].temperature.maximum);
-      this.view.dayViews[i].setDate(this.forecasts[i].date);
-    }
+    lastCheckDate = Date.now();
+    this.renderView();
   }
 
   function setLocationData(locationData) {
     locationName = locationData.LocalizedName;
-    this.view.setLocation(locationData.LocalizedName);
     locationKey = locationData.Details.Key;
     lastLatitude = locationData.GeoPosition.Latitude;
     lastLongitude = locationData.GeoPosition.Longitude;
@@ -128,6 +123,45 @@ function Controller() {
     }
   }
 
+  this.save = function () {
+    if (window.localStorage) {
+      window.localStorage.setItem('lastCheckDate', lastCheckDate);
+      window.localStorage.setItem('lastLatitude', lastLatitude);
+      window.localStorage.setItem('lastLongitude', lastLongitude);
+      window.localStorage.setItem('locationName', locationName);
+      window.localStorage.setItem('locationKey', locationKey);
+      window.localStorage.setItem('forecasts', JSON.stringify(this.forecasts));
+    }
+  }
+
+  this.load = function() {
+    if (window.localStorage) {
+      if (window.localStorage.getItem('lastCheckDate') == null) return;
+      lastCheckDate = new Date(window.localStorage.getItem('lastCheckDate'));
+      lastLatitude = +window.localStorage.getItem('lastLatitude');
+      lastLongitude = +window.localStorage.getItem('lastLongitude');
+      locationName = window.localStorage.getItem('locationName');
+      locationKey = window.localStorage.getItem('locationKey');
+      var forecasts = JSON.parse(window.localStorage.getItem('forecasts'));
+      this.forecasts = [];
+      for (var forecast of forecasts) {
+        this.forecasts.push(new Day(new Date(forecast.date), forecast.icon,
+          forecast.temperature.minimum, forecast.temperature.maximum));
+      }
+      this.renderView();
+    }
+  }
+
+  this.renderView = function () {
+    this.view.setLocation(locationName);
+    for (var i in this.forecasts) {
+      this.view.dayViews[i].setIcon(this.forecasts[i].icon);
+      this.view.dayViews[i].setTemperature(
+        this.forecasts[i].temperature.minimum,
+        this.forecasts[i].temperature.maximum);
+      this.view.dayViews[i].setDate(this.forecasts[i].date);
+    }
+  }
 }
 
 /*
@@ -202,6 +236,12 @@ function View(controller) {
       this.dayViews.push(new DayView(day));
     }
     locationField = document.querySelector('#location');
+    controller.load();
+  }
+
+  window.onbeforeunload = () => {
+    controller.save();
+    return null;
   }
 
   this.setLocation = function (location) {
