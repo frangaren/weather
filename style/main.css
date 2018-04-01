@@ -1,0 +1,127 @@
+/*
+ * Color Palette:
+ * http://paletton.com/#uid=33q0u0knuUjc0YoiiWns-RfDSL+
+ */
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 33.33%);
+  grid-template-rows: 4em auto 4em;
+  background-color: #46BDEB;
+  font-family: 'Helvetica Neue', 'Helvetica', sans-serif;
+  color: #FFF;
+}
+
+header {
+  grid-column: 1;
+  grid-row: 1;
+  background-color: #FF6444;
+  border-bottom: 1px solid #FF431B;
+  border-right: 1px solid #FFB09F;
+  line-height: 4em;
+}
+
+h1 {
+  margin: 0;
+  font-family: 'SignPainter', cursive;
+  font-size: 3em;
+  font-weight: 400;
+  text-align: center;
+  text-shadow: 1px 1px #FF431B;
+}
+
+#forecast-5-day {
+  margin: 0;
+  padding: 0;
+  grid-column: 1 / span 1;
+  grid-row: 2 / span 2;
+  display: grid;
+  grid-template-rows: repeat(4, calc((100vh - 4em) / 4));
+  list-style: none;
+  background-color: #6DCDF1;
+  border-right: 1px solid #9EDFF7;
+  text-shadow: 1px 1px #46BDEB;
+}
+
+#forecast-5-day li {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid #46BDEB;
+  border-top: 1px solid #9EDFF7;
+}
+
+#forecast-5-day .forecast-icon {
+  font-size: 15vh;
+}
+
+.forecast-icon {
+  vertical-align: middle;
+  overflow: hidden;
+  align-self: center;
+  line-height: 150%;
+}
+
+.forecast-icon p {
+  margin: 0;
+}
+
+.forecast-text {
+  padding-left: 24px;
+  text-align: center;
+  align-self: center;
+}
+
+.forecast-text p {
+  margin: 0;
+}
+
+#forecast-5-day .forecast-text .forecast-temperature {
+  font-size: 8vh;
+}
+
+#forecast-today {
+  grid-column: 2 / span 2;
+  grid-row: 1 / span 2;
+  border-left: 1px solid #21ADE2;
+  border-bottom: 1px solid #21ADE2;
+}
+
+#forecast-today {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  text-shadow: 1px 1px #21ADE2;
+}
+
+#forecast-today .forecast-icon {
+  font-size: 20vh;
+}
+
+#forecast-today .forecast-text .forecast-temperature {
+  font-size: 15vh;
+}
+
+#location {
+  grid-column: 2 / span 2;
+  grid-row: 3;
+  background-color: #FFC944;
+  border-top: 1px solid #FFE39F;
+  border-left: 1px solid #FFBD1B;
+  line-height: 4em;
+}
+
+#location p {
+  text-align: center;
+  margin: 0;
+  font-size: 2.6em;
+  text-shadow: 1px 1px #FFBD1B;
+}
