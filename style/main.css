@@ -115,18 +115,54 @@ h1 {
   font-size: 15vh;
 }
 
-#location {
+#bar {
   grid-column: 2 / span 2;
   grid-row: 3;
-  background-color: #FFC944;
-  border-top: 1px solid #FFE39F;
-  border-left: 1px solid #FFBD1B;
-  line-height: 4em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
-#location p {
+#bar button {
+  align-self: left;
+  height: 100%;
+  background-color: #FF6444;
+  border: none;
+  border-left: 1px solid #FF431B;
+  border-top: 1px solid #FFB09F;
+  border-right: 1px solid #FFB09F;
+  font-size: 2.6em;
+  font-weight: 600;
+  color: #FFF;
+  text-shadow: 1px 1px #FF431B;
+}
+
+#bar button:hover {
+  background-color: #FF876D;
+  border-left: 1px solid #FF6444;
+  border-top: 1px solid #FFB09F;
+  border-right: 1px solid #FFB09F;
+  text-shadow: 1px 1px #FF6444;
+}
+
+#bar button:active {
+  background-color: #FF431B;
+  border-left: 1px solid #FF2C00;
+  border-top: 1px solid #FF6444;
+  border-right: 1px solid #FF6444;
+  text-shadow: 1px 1px #FF2C00;
+}
+
+#location {
+  flex-grow: 1;
+  box-sizing: border-box;
+  height: 100%;
+  line-height: 1.6em;
   text-align: center;
   margin: 0;
   font-size: 2.6em;
   text-shadow: 1px 1px #FFBD1B;
+  background-color: #FFC944;
+  border-top: 1px solid #FFE39F;
+  border-left: 1px solid #FFBD1B;
 }

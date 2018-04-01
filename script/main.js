@@ -201,7 +201,7 @@ function View(controller) {
     for (var day of days) {
       this.dayViews.push(new DayView(day));
     }
-    locationField = document.querySelector('#location p');
+    locationField = document.querySelector('#location');
   }
 
   this.setLocation = function (location) {
