@@ -27,7 +27,7 @@ function Controller() {
   this.forecasts = null;
 
   function requestLocationData(latitude, longitude, callback) {
-    var url = 'http://dataservice.accuweather.com/locations/v1/cities/' +
+    var url = 'https://dataservice.accuweather.com/locations/v1/cities/' +
               'geoposition/search?apikey=' + API_KEY + '&q=' + latitude +
               ',' + longitude + '&language=es-es&details=true';
     var request = new XMLHttpRequest();
@@ -42,7 +42,7 @@ function Controller() {
   }
 
   function requestForecastData(callback) {
-    var url = 'http://dataservice.accuweather.com/forecasts/v1/daily/5day/' +
+    var url = 'https://dataservice.accuweather.com/forecasts/v1/daily/5day/' +
               locationKey + '?apikey=' + API_KEY + '&language=es-es';
     var request = new XMLHttpRequest();
     request.onreadystatechange = function () {
