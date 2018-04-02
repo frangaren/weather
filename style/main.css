@@ -108,7 +108,7 @@ h1 {
 }
 
 #forecast-today .forecast-icon {
-  font-size: 20vh;
+  font-size: 17vh;
 }
 
 #forecast-today .forecast-text .forecast-temperature {
@@ -192,6 +192,14 @@ h1 {
     border: none;
     border-top: 1px solid #9EDFF7;
     border-bottom: 1px solid #21ADE2;
+  }
+
+  #forecast-today .forecast-icon {
+    font-size: 15vh;
+  }
+
+  #forecast-today .forecast-text .forecast-temperature {
+    font-size: 8vh;
   }
 
   #bar {
