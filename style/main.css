@@ -166,3 +166,44 @@ h1 {
   border-top: 1px solid #FFE39F;
   border-left: 1px solid #FFBD1B;
 }
+
+@media (max-width: 859px) {
+  body {
+    grid-template-columns: 100%;
+    grid-template-rows: 4em 4em auto auto;
+  }
+
+  header {
+    grid-column: 1;
+    grid-row: 1;
+    border: none;
+    border-bottom: 1px solid #FF431B;
+  }
+
+  #forecast-5-day {
+    grid-column: 1;
+    grid-row: 4;
+    border: none;
+  }
+
+  #forecast-today {
+    grid-column: 1;
+    grid-row: 3;
+    border: none;
+    border-top: 1px solid #9EDFF7;
+    border-bottom: 1px solid #21ADE2;
+  }
+
+  #bar {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  #bar button {
+    border-bottom: 1px solid #FF431B;
+  }
+
+  #location {
+    border-bottom: 1px solid #FFBD1B;
+  }
+}
