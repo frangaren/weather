@@ -75,7 +75,6 @@ function Controller() {
   }
 
   function setForecastData(forecastData) {
-    console.log(forecastData);
     this.forecasts = [];
     for (var dailyForecast of forecastData.DailyForecasts) {
       var date = new Date(dailyForecast.Date);
@@ -162,6 +161,13 @@ function Controller() {
       this.view.dayViews[i].setDate(this.forecasts[i].date);
     }
   }
+
+  this.start = function () {
+    this.load();
+    if (navigator.onLine) {
+      this.update();
+    }
+  }
 }
 
 /*
@@ -236,7 +242,7 @@ function View(controller) {
       this.dayViews.push(new DayView(day));
     }
     locationField = document.querySelector('#location');
-    controller.load();
+    controller.start();
   }
 
   window.onbeforeunload = () => {
